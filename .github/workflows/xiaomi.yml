@@ -1,0 +1,21 @@
+name: XiaoMi Video Reward
+on:
+  workflow_dispatch:  # 允许手动触发
+  schedule:
+    - cron:  '0 23 * * *'  # UTC时间23:00，对应北京时间上午7:00
+
+jobs:
+  run-python-script:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - name: 安装依赖
+        run: pip install -r requirements.txt
+      - name: 执行脚本
+        run: python xiaomi.py
+        env:
+          XIAOMI_ACCOUNTS: ${{ secrets.XIAOMI_ACCOUNTS }}

@@ -4,6 +4,7 @@
 
 import os
 import time
+import json
 import requests
 import urllib3
 from datetime import datetime
@@ -330,15 +331,15 @@ if __name__ == "__main__":
     logger.log(f"脚本已执行 {run_count} 次", level='info')
     logger.log(">>>>>>>>>> 脚本开始执行 <<<<<<<<<<")
 
-    # 多账号配置区 ##################################
-    ORIGINAL_COOKIES = [
-        {   # 账号1
-            'passToken': 'V1:J7rrshrufaw8uWrlTMO7x8y5sauzIndjrj6Z1Uk3RFSrxq9SI36aCL1yr/q2NP/o9lYlowIw7aj1h+pMwDPo2TApd01+GSBaeitproJ7l7aA/bDaeHSVZxk/Zug5haxPtxqJOCeQZOSBIureDvlWF7vkpy1FBgzcKAdy7VALSEYXR8MSK1dJdc5totCwhlnzs3DcII/tAshuPTH9SUX6ZJ26RruicK6pUJJZw9XyCiXBNWPD3i8IOvzs9kX83CF1mfHCz4CNGDM9hGC+ejDjXtyxiPNH+5De9TNeCDAs2Ywy1fxYMSwj9ZyMmnZ+VGO6Xm4AhPNjLg7NTJFtelze1A==',
-            'userId': '1514480338'
-        }
-        # 可继续添加更多账号...
-    ]
-    # 结束配置 ######################################
+     # 从环境变量获取账号信息
+    xiaomi_accounts_json = os.environ.get('XIAOMI_ACCOUNTS', '[]')
+    try:
+        ORIGINAL_COOKIES = json.loads(xiaomi_accounts_json)
+        if not ORIGINAL_COOKIES:
+            logger.log("⚠️ 未配置任何账号或环境变量不存在", level='error')
+    except json.JSONDecodeError:
+        logger.log("⚠️ XIAOMI_ACCOUNTS环境变量JSON格式错误", level='error')
+        ORIGINAL_COOKIES = []
 
     cookie_list = []
     for account in ORIGINAL_COOKIES:
