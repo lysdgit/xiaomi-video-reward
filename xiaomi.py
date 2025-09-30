@@ -215,7 +215,7 @@ class RNL:
         if not self.queryUserJoinListAndQueryUserGoldRichSum():
             return False
 
-        for i in range(2):
+        for i in range(3):
             logger.log(f"--- 正在执行第 {i+1} 个任务循环 ---")
             
             # 获取任务列表
