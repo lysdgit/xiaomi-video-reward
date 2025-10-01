@@ -214,6 +214,8 @@ class RNL:
         # 检查是否成功获取任务记录，这也可以作为账号是否有效的初步判断
         if not self.queryUserJoinListAndQueryUserGoldRichSum():
             return False
+        
+        successful_count = 0  # 记录成功执行的任务数
 
         for i in range(3):
             logger.log(f"--- 正在执行第 {i+1} 个任务循环 ---")
@@ -247,15 +249,18 @@ class RNL:
                 logger.log("尝试重新获取任务数据以领取奖励...")
                 user_task_id = self.get_task(task_code=task_code)
                 if not user_task_id:
-                    return False
+                    logger.log(f"第{i+1}次任务无法完成，可能已达到每日限制")
+                    break
             
             logger.log("等待2秒...")
             time.sleep(2)
             
             # 领取奖励
             if not self.receive_award(user_task_id=user_task_id):
-                return False
-
+                logger.log(f"第{i+1}次任务奖励领取失败")
+                break
+            successful_count += 1
+            logger.log(f"✅ 第{i+1}次任务执行成功")
             logger.log("等待2秒...")
             time.sleep(2)
 
